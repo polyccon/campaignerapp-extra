@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+  backend:
+    build:
+      context: ./server
+    volumes:
+      - ./server/:/code/
+    command: ["python", "manage.py", "runserver", "0.0.0.0:5500"]
+    ports:
+      - "5500:5500"
