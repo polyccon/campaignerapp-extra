@@ -1,11 +1,42 @@
-version: '2'
+version: '3.4'
 
 services:
   backend:
     build:
-      context: ./server
+      context: .
     volumes:
-      - ./server/:/code/
+      - .:/code/
+    working_dir: /code
     command: ["python", "manage.py", "runserver", "0.0.0.0:5500"]
     ports:
       - "5500:5500"
+    depends_on:
+      # - db
+      - rabbitmq
+  # db:
+  #   volumes:
+  #     - db-data:/var/lib/postgresql/data
+  celery_beat:
+    build:
+      context: .
+    volumes:
+      - .:/code/
+    working_dir: /code
+    command: celery -A campaignerapi beat -l DEBUG
+    env_file:
+      - .env
+  celery_worker:
+    build:
+      context: .
+    volumes:
+      - .:/code/
+    working_dir: /code
+    command: celery -A campaignerapi worker -l DEBUG
+    env_file:
+      - .env
+  rabbitmq:
+    image: rabbitmq:3.8-management
+
+# volumes:
+#   db-data:
+#     driver: local
