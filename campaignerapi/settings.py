@@ -97,6 +97,7 @@ DATABASES = {
     }
 }
 
+POSTGRES_HOST_AUTH_METHOD="trust"
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -140,17 +141,7 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# Celery Scheduler settings
-# CELERY_BEAT_SCHEDULE = {
-#     # Executes every morning at 7:30 a.m.
-#     "every_5_minutes_test": {
-#         "task": "campaignerapi.tasks.test_task_email.send_email_task",
-#         "schedule": crontab(
-#             hour="*",
-#             minute="*",
-#         )
-#     }
-# }
+
 CELERY_BEAT_SCHEDULE = {
       'send-email-every-30-seconds': {
         'task': "campaignerapi.tasks.test_task_email.send_email_task",
@@ -161,6 +152,7 @@ CELERY_BEAT_SCHEDULE = {
         },
     },
 }
+
 CELERY_BROKER_URL = 'amqp://localhost'
 
 CORS_ALLOW_HEADERS = (

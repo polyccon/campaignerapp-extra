@@ -11,11 +11,20 @@ services:
     ports:
       - "5500:5500"
     depends_on:
-      # - db
+      - db
       - rabbitmq
-  # db:
-  #   volumes:
-  #     - db-data:/var/lib/postgresql/data
+    env_file:
+      - .env
+  db:
+    image: postgres:9.6-alpine
+    ports:
+    - "5433:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: campaignerapi
+      POSTGRES_USER: campaignerapi
+      POSTGRES_PASSWORD: password
   celery_beat:
     build:
       context: .
@@ -37,6 +46,6 @@ services:
   rabbitmq:
     image: rabbitmq:3.8-management
 
-# volumes:
-#   db-data:
-#     driver: local
+volumes:
+  db-data:
+    driver: local
