@@ -1,4 +1,4 @@
-version: '3.4'
+version: "3.4"
 
 services:
   backend:
@@ -18,7 +18,7 @@ services:
   db:
     image: postgres:9.6-alpine
     ports:
-    - "5433:5432"
+      - "5433:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
@@ -45,7 +45,6 @@ services:
       - .env
   rabbitmq:
     image: rabbitmq:3.8-management
-
 volumes:
   db-data:
     driver: local
