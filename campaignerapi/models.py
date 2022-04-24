@@ -12,8 +12,6 @@ from django.db.models import (
     Q,
 )
 
-# Create your models here.
-
 
 class Messages(models.Model):
     class Meta:
@@ -22,7 +20,7 @@ class Messages(models.Model):
     description = models.CharField(max_length=300, blank=True, null=True)
     summary = JSONField(default=dict)
     user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         null=True,
         editable=False,
