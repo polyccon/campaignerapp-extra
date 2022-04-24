@@ -52,8 +52,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_filters",
     "rest_framework",
-    "campaignerapi.apps.WebservicesConfig",
     "corsheaders",
+    "campaignerapi.apps.WebservicesConfig",
     "django_celery_results",
 ]
 
