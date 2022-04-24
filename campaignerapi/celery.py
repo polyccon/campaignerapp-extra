@@ -15,4 +15,4 @@ app.autodiscover_tasks()
 
 @app.task()
 def debug_task():
-   print("Debug task")
+    print("Debug task")
