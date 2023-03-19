@@ -3,6 +3,7 @@
 
 import os
 import datetime as dt
+from campaignerapi.models import Messages
 from celery import shared_task
 import logging
 
@@ -50,18 +51,23 @@ def send_email(subject, email_address, email_html_content):
     )
 
 
-def render_email_template(
-    template_path,
-):
-    return render_to_string(template_path)
+def render_email_template(template_path, title, body):
+    context = {"title": title, "body": body}
+
+    return render_to_string(template_path, context)
 
 
 @app.task
 def send_email_task():
+    # TODO: add this as a field in database
     subject = "TEST SUBJECT"
 
-    email_html_content = render_email_template(
-        "email/test_email.html"
-    )
-    destination_email = ""
-    send_email("Testing emails", destination_email, email_html_content)
+    messages = Messages.objects.all()
+
+    for message in messages:
+        # TODO: improve naming description and title is the same, summary and body also
+        email_html_content = render_email_template(
+            "email/test_email.html", message.description, message.summary
+        )
+        destination_email = os.getenv("DEFAULT_TO_EMAIL")
+        send_email(subject, destination_email, email_html_content)
