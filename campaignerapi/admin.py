@@ -33,4 +33,4 @@ logger = logging.getLogger(__name__)
 
 @admin.register(Messages)
 class MessagesAdmin(admin.ModelAdmin):
-    list_display = ("description", "summary", "user")
+    list_display = ("subject", "body", "user")

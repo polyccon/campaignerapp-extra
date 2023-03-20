@@ -17,9 +17,8 @@ class Messages(models.Model):
     class Meta:
         ordering = ("id",)
 
-    # TODO: Add sending_date
-    description = models.CharField(max_length=300, blank=True, null=True)
-    summary = JSONField(default=dict)
+    subject = models.CharField(max_length=300, blank=True, null=True)
+    body = JSONField(default=dict)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

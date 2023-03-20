@@ -51,23 +51,18 @@ def send_email(subject, email_address, email_html_content):
     )
 
 
-def render_email_template(template_path, title, body):
-    context = {"title": title, "body": body}
-
+def render_email_template(template_path, body):
+    context = {"body": body}
     return render_to_string(template_path, context)
 
 
 @app.task
 def send_email_task():
-    # TODO: add this as a field in database
-    subject = "TEST SUBJECT"
-
     messages = Messages.objects.all()
 
     for message in messages:
-        # TODO: improve naming description and title is the same, summary and body also
         email_html_content = render_email_template(
-            "email/test_email.html", message.description, message.summary
+            "email/test_email.html", message.body
         )
         destination_email = os.getenv("DEFAULT_TO_EMAIL")
-        send_email(subject, destination_email, email_html_content)
+        send_email(message.subject, destination_email, email_html_content)
