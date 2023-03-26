@@ -1,0 +1,54 @@
+name: Testing
+
+on:
+  push:
+env:
+  DJANGO_SETTINGS_MODULE: campaignerapp-extra.config.settings
+  JEST_JUNIT_OUTPUT_FILE: /home/runner/work/campaignerapp-extra/campaignerapp-extra/unit-test-results.xml
+  DATABASE_HOST: ${{ vars.DATABASE_HOST }}
+  DATABASE_NAME: ${{ vars.DATABASE_NAME }}
+  DATABASE_PASSWORD: ${{ vars.DATABASE_PASSWORD }}
+  DATABASE_USER: ${{ vars.DATABASE_USER }}
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+jobs:
+  Unit-Tests:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        db: [postgres]
+        python-version: [3.11]
+        include:
+          - db: postgres
+            db_port: 5432
+    permissions:
+      contents: read
+      issues: read
+      checks: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Start PostgreSQL
+        run: |
+          sudo systemctl start postgresql.service
+          sudo -u postgres createuser -s runner
+      - name: Git clone the repository
+        uses: actions/checkout@v3
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+      - name: Run Tests
+        run: pytest --junitxml=unit-test-results.xml
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          check_name: Unit-Tests-Report
+          junit_files: "/home/runner/work/campaignerapp-extra/campaignerapp-extra/*.xml"
