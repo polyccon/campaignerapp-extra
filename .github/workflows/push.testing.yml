@@ -3,8 +3,8 @@ name: Testing
 on:
   push:
 env:
-  DJANGO_SETTINGS_MODULE: campaignerapp-extra.config.settings
-  JEST_JUNIT_OUTPUT_FILE: /home/runner/work/campaignerapp-extra/campaignerapp-extra/unit-test-results.xml
+  DJANGO_SETTINGS_MODULE: campaignerapi.config.settings
+  JEST_JUNIT_OUTPUT_FILE: /home/runner/work/campaignerapp-extra/unit-test-results.xml
   DATABASE_HOST: ${{ vars.DATABASE_HOST }}
   DATABASE_NAME: ${{ vars.DATABASE_NAME }}
   DATABASE_PASSWORD: ${{ vars.DATABASE_PASSWORD }}
@@ -51,4 +51,4 @@ jobs:
         if: always()
         with:
           check_name: Unit-Tests-Report
-          junit_files: "/home/runner/work/campaignerapp-extra/campaignerapp-extra/*.xml"
+          junit_files: "/home/runner/work/campaignerapp-extra/*.xml"
