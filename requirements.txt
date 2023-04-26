@@ -14,7 +14,7 @@ idna==3.3
 pytz==2021.3
 requests==2.26.0
 sqlparse==0.4.2
-urllib3==1.26.7
+urllib3==2.0.0
 s3transfer==0.5.0
 pytest==6.2.5
 python-decouple==3.6
