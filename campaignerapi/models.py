@@ -12,6 +12,8 @@ from django.db.models import (
     Q,
 )
 
+from campaignerapi.validators import date_is_present_or_future
+
 
 class Messages(models.Model):
     class Meta:
@@ -26,3 +28,8 @@ class Messages(models.Model):
         editable=False,
         related_name="messages",
     )
+    # sending_datetime = models.DateTimeField(
+    #     null=True, validators=[date_is_present_or_future]
+    # )
+    # created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    # updated_at = models.DateTimeField(auto_now=True, editable=False, null=True)

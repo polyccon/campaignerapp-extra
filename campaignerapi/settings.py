@@ -157,7 +157,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CELERY_BEAT_SCHEDULE = {
     "send-email-every-30-seconds": {
-        "task": "campaignerapi.tasks.test_task_email.send_email_task",
+        "task": "campaignerapi.tasks.task_email.send_email_task",
         "schedule": 30.0,
         # 'args': (16, 16),
         "options": {

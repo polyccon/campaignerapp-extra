@@ -61,6 +61,8 @@ def send_email_task():
     messages = Messages.objects.all()
 
     for message in messages:
+        print("TEST", message.body, message.subject)
         email_html_content = render_email_template("email.html", message.body)
         destination_email = os.getenv("DEFAULT_TO_EMAIL")
+        print("DESTINATION EMAIL", destination_email)
         send_email(message.subject, destination_email, email_html_content)

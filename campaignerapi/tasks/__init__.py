@@ -1,1 +1,1 @@
-from .task_email import send_email_task
+from campaignerapi.tasks.task_email import send_email_task
