@@ -2,19 +2,20 @@
 """
 
 import os
-import datetime as dt
-from campaignerapi.models import Messages
-from celery import shared_task
 import logging
-
 import pytz
+import datetime as dt
+import random
+
+from celery import shared_task
+
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils import timezone
 
 from campaignerapi.celery import app
-
+from campaignerapi.models import Messages
 from campaignerapi.util.other import (
     mask_email,
     snake_case_to_title_human,
@@ -58,11 +59,9 @@ def render_email_template(template_path, body):
 
 @app.task
 def send_email_task():
-    messages = Messages.objects.all()
+    messages = Messages.objects.filter(sending_datetime__date=dt.datetime.today())
 
     for message in messages:
-        print("TEST", message.body, message.subject)
         email_html_content = render_email_template("email.html", message.body)
         destination_email = os.getenv("DEFAULT_TO_EMAIL")
-        print("DESTINATION EMAIL", destination_email)
         send_email(message.subject, destination_email, email_html_content)
