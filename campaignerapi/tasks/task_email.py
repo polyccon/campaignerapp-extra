@@ -15,7 +15,7 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 
 from campaignerapi.celery import app
-from campaignerapi.models import Messages
+
 from campaignerapi.util.other import (
     mask_email,
     snake_case_to_title_human,
@@ -58,10 +58,11 @@ def render_email_template(template_path, body):
 
 
 @app.task
-def send_email_task():
-    messages = Messages.objects.filter(sending_datetime__date=dt.datetime.today())
+def send_email_task(id):
+    from campaignerapi.models import Messages
 
-    for message in messages:
-        email_html_content = render_email_template("email.html", message.body)
-        destination_email = os.getenv("DEFAULT_TO_EMAIL")
-        send_email(message.subject, destination_email, email_html_content)
+    message = Messages.objects.get(id=id)
+
+    email_html_content = render_email_template("email.html", message.body)
+    destination_email = os.getenv("DEFAULT_TO_EMAIL")
+    send_email(message.subject, destination_email, email_html_content)

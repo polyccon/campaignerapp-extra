@@ -13,6 +13,7 @@ from django.db.models import (
 )
 
 from campaignerapi.validators import date_is_present_or_future
+from campaignerapi.tasks import send_email_task
 
 
 class Messages(models.Model):
@@ -33,3 +34,7 @@ class Messages(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, editable=False, null=True)
+
+    def save(self, *args, **kwargs):
+        super().save(**kwargs)
+        send_email_task(self.id)
