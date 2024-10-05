@@ -33,4 +33,4 @@ logger = logging.getLogger(__name__)
 
 @admin.register(Messages)
 class MessagesAdmin(admin.ModelAdmin):
-    list_display = ("subject", "body", "user")
+    list_display = ("id", "subject", "body", "user", "sending_datetime")
