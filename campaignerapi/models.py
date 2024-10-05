@@ -37,4 +37,4 @@ class Messages(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(**kwargs)
-        send_email_task(self.id)
+        send_email_task()

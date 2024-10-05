@@ -14,6 +14,7 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils import timezone
+from django.utils.timezone import now
 
 from campaignerapi.celery import app
 
@@ -21,6 +22,7 @@ from campaignerapi.util.other import (
     mask_email,
     snake_case_to_title_human,
 )
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -63,9 +65,14 @@ def render_email_template(template_path, body):
 def send_email_task():
     from campaignerapi.models import Messages
 
-    today = date.today()
-    message = Messages.objects.get(sending_datetime__contains=today)
-
-    email_html_content = render_email_template("email.html", message.body)
-    destination_email = os.getenv("DEFAULT_TO_EMAIL")
-    send_email(message.subject, destination_email, email_html_content)
+    current_datetime = now()  # for non timezone-aware dates datetime.now()
+    current_date = current_datetime.date()
+    current_hour = current_datetime.hour
+    messages = Messages.objects.filter(
+        sending_datetime__date=current_date,
+        sending_datetime__hour=current_hour
+    )
+    for message in messages:
+        email_html_content = render_email_template("email.html", message.body)
+        destination_email = os.getenv("DEFAULT_TO_EMAIL")
+        send_email(message.subject, destination_email, email_html_content)
