@@ -159,7 +159,6 @@ CELERY_BEAT_SCHEDULE = {
     "send-email-every-30-seconds": {
         "task": "campaignerapi.tasks.task_email.send_email_task",
         "schedule": 30.0,
-        # 'args': (16, 16),
         "options": {
             "expires": 15.0,
         },

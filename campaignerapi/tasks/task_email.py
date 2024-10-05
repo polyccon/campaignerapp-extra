@@ -6,6 +6,7 @@ import logging
 import pytz
 import datetime as dt
 import random
+from datetime import date
 
 from celery import shared_task
 
@@ -22,6 +23,7 @@ from campaignerapi.util.other import (
 )
 
 LOGGER = logging.getLogger(__name__)
+
 
 
 def send_email(subject, email_address, email_html_content):
@@ -58,10 +60,11 @@ def render_email_template(template_path, body):
 
 
 @app.task
-def send_email_task(id):
+def send_email_task():
     from campaignerapi.models import Messages
 
-    message = Messages.objects.get(id=id)
+    today = date.today()
+    message = Messages.objects.get(sending_datetime__contains=today)
 
     email_html_content = render_email_template("email.html", message.body)
     destination_email = os.getenv("DEFAULT_TO_EMAIL")
