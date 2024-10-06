@@ -33,7 +33,7 @@ RUN pip install --no-cache-dir -r requirements.txt --no-binary psycopg2
 
 # Main container --------------------------------------------------------------
 
-FROM base_python as base
+FROM base_python as development
 
 RUN \
     apt-get update && apt-get install -y --no-install-recommends \
@@ -46,6 +46,28 @@ COPY --from=venv /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 WORKDIR /code
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
+
+EXPOSE 5500
+
+FROM base_python as production
+RUN \
+    apt-get update && apt-get install -y --no-install-recommends \
+    libpq-dev libcurl4-openssl-dev &&\
+    true
+
+# Copy python packages
+COPY --from=venv /opt/venv /opt/venv
+
+ENV PATH="/opt/venv/bin:$PATH"
+
+WORKDIR /code
+
+COPY manage.py .\
+     campaignerapi/ campaignerapi/
 
 COPY requirements.txt .
 
