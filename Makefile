@@ -5,6 +5,27 @@ PREFIX_COMPOSE           := \
 	docker-compose ${CI_COMPOSE_ARGS}
 RUN_COMPOSE				 := ${PREFIX_COMPOSE} run --rm backend
 
+help: ## Prints this help/overview message
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-17s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+
+stop: ## Stops all containers
+	${PREFIX_COMPOSE} stop
+
+run: stop build up ## Builds all containers and (re)runs them in foreground.
+
+restart: stop start ## Restarts all containers
+
+build: ## Builds all containers
+	${PREFIX_COMPOSE} build
+
+build_no_cache: ## Builds all containers without cache
+	${PREFIX_COMPOSE} build --no-cache
+
+rebuild: down build start ## Fully rebuild containers
+
+up: ## Starts all containers in foreground
+	${PREFIX_COMPOSE} up
+
 sh: ## Follow the logs for the microservice
 	${RUN_COMPOSE} /bin/bash
 
@@ -19,3 +40,6 @@ migrate:
 
 shell_plus:
 	${RUN_COMPOSE} python manage.py shell_plus
+
+createsuperuser:
+	${RUN_COMPOSE} python manage.py createsuperuser

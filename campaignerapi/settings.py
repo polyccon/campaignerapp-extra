@@ -44,30 +44,29 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "campaignerapi.apps.WebservicesConfig",
+    "corsheaders",
+    "django_extensions",
+    "django_filters",
+    "rest_framework",
+    "django_celery_results",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django_extensions",
-    "django_filters",
-    "rest_framework",
-    "corsheaders",
-    "campaignerapi.apps.WebservicesConfig",
-    "django_celery_results",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # "app.middleware.logger.LoggingMiddleware",
 ]
 
 ROOT_URLCONF = "campaignerapi.urls"
@@ -90,6 +89,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "campaignerapi.wsgi.application"
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ]
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -103,11 +108,33 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 
+DATABASE_ENGINE = config(
+    "DATABASE_ENGINE", default="django.db.backends.postgresql"
+)
+DATABASE_HOST = config("DATABASE_HOST", default="localhost")
+DATABASE_NAME = config("DATABASE_NAME", default=SettingsFallbacks.DATABASE_NAME.value)
+DATABASE_PASSWORD = config(
+    "DATABASE_PASSWORD", default=SettingsFallbacks.DATABASE_PASSWORD.value
+)
+DATABASE_USER = config("DATABASE_USER", default=SettingsFallbacks.DATABASE_USER.value)
+DATABASE_PORT = config("DATABASE_PORT", default=5432)
+DATABASE_SSL = config("DATABASE_SSL", default=False, cast=bool)
+
+DATABASE_OPTIONS = {}
+if DATABASE_SSL:
+    DATABASE_OPTIONS["sslmode"] = "require"
+
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+        "ENGINE": DATABASE_ENGINE,
+        "HOST": DATABASE_HOST,
+        "NAME": DATABASE_NAME,
+        "PASSWORD": DATABASE_PASSWORD,
+        "USER": DATABASE_USER,
+        "PORT": DATABASE_PORT,
+        "OPTIONS": DATABASE_OPTIONS,
+    },
 }
 
 POSTGRES_HOST_AUTH_METHOD = "trust"
@@ -164,6 +191,7 @@ CELERY_BEAT_SCHEDULE = {
         },
     },
 }
+
 
 CELERY_BROKER_URL = "amqp://localhost"
 
