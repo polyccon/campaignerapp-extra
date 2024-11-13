@@ -40,3 +40,6 @@ migrate:
 
 shell_plus:
 	${RUN_COMPOSE} python manage.py shell_plus
+
+createsuperuser:
+	${RUN_COMPOSE} python manage.py createsuperuser
