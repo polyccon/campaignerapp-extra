@@ -17,12 +17,13 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import (
     include,
-    re_path,
 )
-
+from django.urls import (
+    path
+)
 from campaignerapi.views import MessagesViewSet
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    re_path(r"^messages", view=MessagesViewSet, name="messages"),
+    path("messages/", view=MessagesViewSet.as_view({"post": "create"}), name="messages"),
 ]
