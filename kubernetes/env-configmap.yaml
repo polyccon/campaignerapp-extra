@@ -1,0 +1,20 @@
+apiVersion: v1
+data:
+  CELERY_ALWAYS_EAGER: "True"
+  CELERY_BROKER_URL: amqp://rabbitmq:5672//
+  DEFAULT_FROM_EMAIL: polyccon@gmail.com
+  DEFAULT_TO_EMAIL: krisgarik5@gmail.com
+  DEFAULT_TO_NAME: Kristina
+  DJANGO_SETTINGS_MODULE: campaignerapi.settings
+  EMAIL_HOST_PASSWORD: fjiwquxgbudsblsq
+  EMAIL_HOST_USER: polyccon@gmail.com
+  POSTGRES_NAME: campaignerapi
+  POSTGRES_PASSWORD: password
+  POSTGRES_USER: campaignerapi
+  SECRET_KEY: django-insecure-r2+b_crtb(+ieioynq0&w=v2()7+)tj5lxva0m(jy(ceb9*_q0
+  SETTINGS_LOCATION: campaignerapi/settings.py
+kind: ConfigMap
+metadata:
+  labels:
+    io.kompose.service: backend-env
+  name: campaignerapp-configmap

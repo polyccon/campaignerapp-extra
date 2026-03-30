@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.34.0 (HEAD)
+      labels:
+        io.kompose.service: backend
+    spec:
+#      initContainers:
+#      - name: wait-for-postgres
+#        image: postgres:13-alpine  # Using the postgres image to ensure pg_isready is available
+#        command: ['sh', '-c', 'until pg_isready -h db -p 5432 -U campaignerapi; do echo "waiting for postgres..."; sleep 5; done; echo "Postgres is ready!"']
+#      - env:
+#          - name: POSTGRES_DB
+#            value: campaignerapi
+#          - name: POSTGRES_PASSWORD
+#            value: password
+#          - name: POSTGRES_USER
+#            value: campaignerapi
+      containers:
+        - args:
+            - python
+            - manage.py
+            - runserver
+            - 0.0.0.0:5500
+          image: campaignerapp-extra-backend:latest
+          imagePullPolicy: IfNotPresent
+          name: backend
+          volumeMounts:
+            - name: code-volume
+              mountPath: /code
+          ports:
+            - containerPort: 5500
+              protocol: TCP
+          env:
+          - name: DATABASE_HOST
+            value: db  # Ensure your app uses this env var for connection
+          - name: DATABASE_USER
+            value: campaignerapi  # Ensure this matches your PostgreSQL
+          - name: DATABASE_PASSWORD
+            value: password  # Ensure this matches your PostgreSQL config
+          - name: DATABASE_NAME
+            value: campaignerapi
+          workingDir: /code
+          envFrom:
+            - configMapRef:
+                name: campaignerapp-configmap
+      volumes:
+        - name: code-volume
+          hostPath:
+            path: /Users/constantina.p/dev/personal/myprojects/campaignerapp-extra
+            type: Directory
+      restartPolicy: Always

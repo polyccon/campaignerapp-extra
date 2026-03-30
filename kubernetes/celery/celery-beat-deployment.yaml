@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celery-beat
+  namespace: default  # Adjust as necessary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: celery-beat
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.service: celery-beat
+    spec:
+      containers:
+        - name: celery-beat
+          image: campaignerapp-extra-celery_beat:latest  # Ensure this is correct
+          imagePullPolicy: IfNotPresent  # Use this if the image is built locally
+          args:
+            - celery
+            - -A
+            - campaignerapi
+            - beat
+            - -l
+            - DEBUG
+          envFrom:
+            - configMapRef:
+                name: campaignerapp-configmap
+      restartPolicy: Always
