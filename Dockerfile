@@ -1,4 +1,4 @@
-ARG DOCKER_IMAGE_BASE=python:3.8.10-slim
+ARG DOCKER_IMAGE_BASE=python:3.9-bullseye
 FROM ${DOCKER_IMAGE_BASE} as base_python
 
 # Virtualenv setup ------------------------------------------------------------

@@ -2,7 +2,7 @@ COMPOSE_PROJECT_NAME     ?= ${CI_PROJECT_NAME}${CI_PIPELINE_ID}
 PREFIX_COMPOSE           := \
 	COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME} \
 	${CI_COMPOSE_PREFIX} \
-	docker-compose ${CI_COMPOSE_ARGS}
+	docker compose ${CI_COMPOSE_ARGS}
 RUN_COMPOSE				 := ${PREFIX_COMPOSE} run --rm backend
 
 help: ## Prints this help/overview message
